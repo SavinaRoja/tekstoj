@@ -1,5 +1,4 @@
 """
-This is the setup file to install openaccess_epub.
 """
 
 from distutils.core import setup
