@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, g
-from models import Contact, Message
+from flask import Flask, g, request, jsonify
+from models import Contact, Message, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from twilio import twiml
+
 
 #These will be configurable, non-committed, things later
 DB_USER = 'tekstoj-server'  # This user has rights to edit
@@ -13,12 +15,10 @@ app = Flask(__name__)
 db_url = 'mysql+mysqldb://{}:{}@localhost/{}'.format(DB_USER,
                                                      DB_PASS,
                                                      DB_NAME)
-#g.engine = create_engine(db_url)
-#g.Session = sessionmaker(bind=g.engine)
-
 def get_session():
     if not hasattr(g, 'Session'):
         engine = create_engine(db_url)
+        Base.metadata.create_all(engine)
         g.Session = sessionmaker(bind=engine)
     return g.Session()
 
@@ -30,17 +30,16 @@ def hello():
 
 @app.route('/receive', methods=['POST'])
 def sms():
-    #transmitted = dt.datetime.now()
+    session = get_session()
     f = request.form
-    print(f)
     msg = Message(sid=f['MessageSid'],
                   datecreated=None,  # This is for outgoing
-                  dateupated=None,  # This is for outgoing
+                  dateupdated=None,  # This is for outgoing
                   datesent=None,  # This is for outgoing
                   accountsid=f['AccountSid'],
                   fromnumber=f['From'],
                   tonumber=f['To'],
-                  body=f['body'],
+                  body=f['Body'],
                   nummedia=int(f['NumMedia']),
                   numsegments=int(f['NumSegments']),
                   status=f['SmsStatus'],
@@ -51,11 +50,11 @@ def sms():
                   priceunit=f.get('PriceUnit', None),  # unconfirmed
                   apiversion=f['ApiVersion'],
                   uri=f.get('Uri', None),  # unconfirmed
-                  subresourceuri=f.get('SubresourceUri', None),  #unconfirmed
-                  )
-    session = get_session()
+                  subresourceuri=f.get('SubresourceUri', None))  #unconfirmed
     session.add(msg)
     session.commit()
+    session.close()
+    return str(twiml.Response())
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0')
+  app.run(host='0.0.0.0', debug=True)
