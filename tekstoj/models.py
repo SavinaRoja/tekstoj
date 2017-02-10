@@ -8,7 +8,7 @@ Base = declarative_base()
 class Contact(Base):
     __tablename__ = 'contacts'
 
-    number = Column(String(11), primary_key=True)
+    number = Column(String(12), primary_key=True)
     name   = Column(String(255))
     fixed  = Column(Integer)  # 1 means user-defined, static, name, 0 else
     unread = Column(Integer)  # 1 means there are unread messages
@@ -29,8 +29,8 @@ class Message(Base):
     datesent     = Column(String(32))
     accountsid   = Column(String(34))
     #messagingservicesid
-    fromnumber   = Column(String(11))
-    tonumber     = Column(String(11))
+    fromnumber   = Column(String(12))
+    tonumber     = Column(String(12))
     body         = Column(Text)
     nummedia     = Column(Integer)
     numsegments  = Column(Integer)
@@ -39,7 +39,7 @@ class Message(Base):
     errormessage = Column(Text)  # The error mapping may as well be its own table
     direction    = Column(String(14))  # 'outbound-reply' is longest value
     price        = Column(String(16))  # safe limit, who knows
-    princeunit   = Column(String(3))
+    priceunit   = Column(String(3))
     apiversion   = Column(String(12))  # like '2010-04-01', with extra 2
     uri          = Column(Text)
     subresourceuri = Column(Text)
