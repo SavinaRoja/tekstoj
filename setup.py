@@ -26,6 +26,6 @@ setup(name='tekstoj',
                    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
                    'Programming Language :: Python :: 3',
                    'Operating System :: OS Independent'],
-      install_requires=['docopt', 'twilio', 'flask', 'sqlalchemy']
+      install_requires=['docopt', 'twilio==6.0rc10', 'flask', 'sqlalchemy']
       )
 
